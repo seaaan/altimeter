@@ -1,15 +1,12 @@
-// wiring: 
-// gnd to gnd
-// 5V to 5V
 // SDA to A4
 // SCL to A5
 
-// ** MOSI - pin 11
-// ** MISO - pin 12
-// ** CLK - pin 13
-// ** CS - pin 10	 
-// ** CD - nothing
-// ** 3v - nothing
+// MOSI - pin 11
+// MISO - pin 12
+// CLK - pin 13
+// CS - pin 10	 
+// CD - nothing
+// 3v - nothing
 
 #include <Wire.h>
 #include <Adafruit_MPL3115A2.h>
