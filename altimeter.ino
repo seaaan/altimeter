@@ -4,7 +4,7 @@
 // MOSI - pin 11
 // MISO - pin 12
 // CLK - pin 13
-// CS - pin 10	 
+// CS - pin 10     
 // CD - nothing
 // 3v - nothing
 
@@ -24,73 +24,73 @@ const int x = A2;
 char* fileCharArray;
 
 void setup() {
-  Serial.begin(9600);
-  Wire.begin();
-  RTC.begin();
-  
-  if (!altimeter.begin()) {
-    Serial.println("Couldn't find altimeter");
-    return;
-  }
-  
-  if (!SD.begin(chipSelect)) {
-    Serial.println("SD card failed or not present");
-    return;
-  }
-  
-  createFile();
-  
-  pinMode(z, INPUT);
-  pinMode(y, INPUT);
-  pinMode(x, INPUT);
+    Serial.begin(9600);
+    Wire.begin();
+    RTC.begin();
+    
+    if (!altimeter.begin()) {
+        Serial.println("Couldn't find altimeter");
+        return;
+    }
+
+    if (!SD.begin(chipSelect)) {
+        Serial.println("SD card failed or not present");
+        return;
+    }
+
+    createFile();
+
+    pinMode(z, INPUT);
+    pinMode(y, INPUT);
+    pinMode(x, INPUT);
 
 }
 
 // creates a file named with the date plus a numeric extension 
 // stores that in the file global variable
 void createFile() {
-  DateTime dateTime = RTC.now();
-  
-  int ARRAY_SIZE = 20;
-  
-  fileCharArray = new char[ARRAY_SIZE];
-  String nameToUse = String(dateTime.year()) + 
-                     String(dateTime.month()) +
-                     String(dateTime.day());
-                     
-  nameToUse.toCharArray(fileCharArray, ARRAY_SIZE, 0);
-  String tempName = nameToUse;
-  int i = 0;
-  while (SD.exists(fileCharArray)) {
-      i++;
-      tempName = nameToUse + String(i);
-      tempName.toCharArray(fileCharArray, ARRAY_SIZE, 0);
-  }
+    DateTime dateTime = RTC.now();
+    
+    int ARRAY_SIZE = 20;
+    
+    fileCharArray = new char[ARRAY_SIZE];
+    String nameToUse = String(dateTime.year()) + 
+    String(dateTime.month()) +
+    String(dateTime.day());
 
-  File file = SD.open(fileCharArray, FILE_WRITE);
-  file.println("Date,Pascals,Meters,Celsius,X,Y,Z");
-  file.close();
+    nameToUse.toCharArray(fileCharArray, ARRAY_SIZE, 0);
+    String tempName = nameToUse;
+    int i = 0;
+    while (SD.exists(fileCharArray)) {
+        i++;
+        tempName = nameToUse + String(i);
+        tempName.toCharArray(fileCharArray, ARRAY_SIZE, 0);
+    }
+
+    File file = SD.open(fileCharArray, FILE_WRITE);
+    file.println("Date,Pascals,Meters,Celsius,X,Y,Z");
+    file.close();
 }
 
 void loop() {
     DateTime now = RTC.now();
-    String readings = String(now.hour())   + ':' +
-                      String(now.minute()) + ':' +
-                      String(now.second()) + "," + 
-                      String((long) altimeter.getPressure()) + "," +
-                      String((int) altimeter.getAltitude()) + "," + 
-                      String((int) altimeter.getTemperature()) + "," +
-                      String(analogRead(x)) + "," +
-                      String(analogRead(y)) + "," +
-                      String(analogRead(z));
+    String readings = String(now.hour()) + ':' +
+        String(now.minute()) + ':' +
+        String(now.second()) + "," + 
+        String((long) altimeter.getPressure()) + "," +
+        String((int) altimeter.getAltitude()) + "," + 
+        String((int) altimeter.getTemperature()) + "," +
+        String(analogRead(x)) + "," +
+        String(analogRead(y)) + "," +
+        String(analogRead(z));
 
-  File file = SD.open(fileCharArray, FILE_WRITE);
-  file.println(readings);
-  file.close();
-  
-  float f = altimeter.getAltitude();
-  Serial.println(f);
-  Serial.println((int) f);
-  delay(1000);
+    File file = SD.open(fileCharArray, FILE_WRITE);
+    file.println(readings);
+    file.close();
+
+    float f = altimeter.getAltitude();
+    Serial.println(f);
+    Serial.println((int) f);
+    delay(1000);
 }
 
