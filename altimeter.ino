@@ -43,7 +43,6 @@ void setup() {
     pinMode(z, INPUT);
     pinMode(y, INPUT);
     pinMode(x, INPUT);
-
 }
 
 // creates a file named with the date plus a numeric extension 
@@ -88,9 +87,6 @@ void loop() {
     file.println(readings);
     file.close();
 
-    float f = altimeter.getAltitude();
-    Serial.println(f);
-    Serial.println((int) f);
     delay(1000);
 }
 
