@@ -53,8 +53,7 @@ void createFile() {
     int ARRAY_SIZE = 20;
     
     fileCharArray = new char[ARRAY_SIZE];
-    String nameToUse = String(dateTime.year()) + 
-    String(dateTime.month()) +
+    String nameToUse = String(dateTime.month()) +
     String(dateTime.day());
 
     nameToUse.toCharArray(fileCharArray, ARRAY_SIZE, 0);
