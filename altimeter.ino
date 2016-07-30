@@ -76,9 +76,9 @@ void loop() {
     String readings = String(now.hour()) + ':' +
         String(now.minute()) + ':' +
         String(now.second()) + "," + 
-        String((long) altimeter.getPressure()) + "," +
-        String((int) altimeter.getAltitude()) + "," + 
-        String((int) altimeter.getTemperature()) + "," +
+        String(floatToString(altimeter.getPressure())) + "," +
+        String((long) altimeter.getAltitude()) + "," + 
+        String(floatToString(altimeter.getTemperature())) + "," +
         String(analogRead(x)) + "," +
         String(analogRead(y)) + "," +
         String(analogRead(z));
@@ -86,7 +86,18 @@ void loop() {
     File file = SD.open(fileCharArray, FILE_WRITE);
     file.println(readings);
     file.close();
-
+    
+    Serial.println(readings);
+    altimeter.getAltitude();
     delay(1000);
 }
 
+String floatToString(float x) {
+  long beforeDecimal = x; 
+
+  x = x * 100;
+  
+  int afterDecimal = ((long) x) % 100; 
+  
+  return String(beforeDecimal) + "." + String(afterDecimal); 
+}
