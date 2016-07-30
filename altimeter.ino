@@ -72,12 +72,16 @@ void createFile() {
 }
 
 void loop() {
+    writeLine();
+}
+
+void writeLine() {
     DateTime now = RTC.now();
     String readings = String(now.hour()) + ':' +
         String(now.minute()) + ':' +
         String(now.second()) + "," + 
         String(floatToString(altimeter.getPressure())) + "," +
-        String((long) altimeter.getAltitude()) + "," + 
+        String(floatToString(altimeter.getAltitude())) + "," + 
         String(floatToString(altimeter.getTemperature())) + "," +
         String(analogRead(x)) + "," +
         String(analogRead(y)) + "," +
@@ -86,10 +90,6 @@ void loop() {
     File file = SD.open(fileCharArray, FILE_WRITE);
     file.println(readings);
     file.close();
-    
-    Serial.println(readings);
-    altimeter.getAltitude();
-    delay(1000);
 }
 
 String floatToString(float x) {
