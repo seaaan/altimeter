@@ -66,7 +66,7 @@ void createFile() {
     }
 
     File file = SD.open(fileCharArray, FILE_WRITE);
-    file.println("Date,Pascals,Meters,Celsius,X,Y,Z");
+    file.println("Date,Meters,Celsius,X,Y,Z");
     file.close();
 }
 
@@ -79,7 +79,6 @@ void writeLine() {
     String readings = String(now.hour()) + ':' +
         String(now.minute()) + ':' +
         String(now.second()) + "," + 
-        String(floatToString(altimeter.getPressure())) + "," +
         String(floatToString(altimeter.getAltitude())) + "," + 
         String(floatToString(altimeter.getTemperature())) + "," +
         String(analogRead(x)) + "," +
