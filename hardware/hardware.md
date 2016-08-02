@@ -6,4 +6,4 @@
 ![fritzing image of breadboard](imgs/theory.png)
 
 ### Practice
-![breadboard photograph](imgs/practice.png)
+![breadboard photograph](imgs/practice.jpg)
