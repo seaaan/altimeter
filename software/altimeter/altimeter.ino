@@ -9,9 +9,12 @@
 // 3v - nothing
 
 #include <Wire.h>
-#include <Adafruit_MPL3115A2.h>
 #include "RTClib.h"
 #include <SD.h>
+
+extern "C"{
+  #include "altitudesensor.h"
+};
 
 Adafruit_MPL3115A2 altimeter = Adafruit_MPL3115A2();
 RTC_DS1307 RTC;
@@ -43,6 +46,9 @@ void setup() {
     pinMode(z, INPUT);
     pinMode(y, INPUT);
     pinMode(x, INPUT);
+    
+    // need to start the sensor before entering the loop
+    altimeter.startReadingAltitude();
 }
 
 // creates a file named with the date plus a numeric extension 
@@ -75,11 +81,21 @@ void loop() {
 }
 
 void writeLine() {
+  while(!altimeter.isAltitudeReady()) {
+    delay(50);
+  }
+  
+  float altitude = altimeter.readAltitude();
+
+  // get sensor going on the next reading while we
+  // run the rest of the functions
+  altimeter.startReadingAltitude();
+  
     DateTime now = RTC.now();
     String readings = String(now.hour()) + ':' +
         String(now.minute()) + ':' +
         String(now.second()) + "," + 
-        String(floatToString(altimeter.getAltitude())) + "," + 
+        String(floatToString(altitude)) + "," + 
         String(floatToString(altimeter.getTemperature())) + "," +
         String(analogRead(x)) + "," +
         String(analogRead(y)) + "," +
