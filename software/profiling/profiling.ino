@@ -2,7 +2,9 @@
 // Serial output saved to a CSV file as milliseconds per step 
 
 #include <Wire.h>
-#include <Adafruit_MPL3115A2.h>
+extern "C"{
+  #include "altitudesensor.h"
+};
 #include "RTClib.h"
 #include <SD.h>
 
@@ -59,18 +61,22 @@ void createFile() {
     }
 
     File file = SD.open(fileCharArray, FILE_WRITE);
-    file.println("Date,Pascals,Meters,Celsius,X,Y,Z");
+    file.println("Date,Meters,Celsius,X,Y,Z");
     file.close();
-    Serial.println("RTC,Pressure,Altitude,Temperature,X,Y,Z,SD");
+    Serial.println("RTC,Altitude,Temperature,X,Y,Z,SD");
+    altimeter.startReadingAltitude();
 }
 
 void loop() {
-    writeLine();
+  long start = millis();
+  writeLineNewLibrary();
+  //writeLine();
+  Serial.println(millis() - start);
 }
 
 void writeLine() {
     long current = millis();
-    String timeline;
+    String timeline = "";
     String readings;  
     
     DateTime now = RTC.now();
@@ -81,11 +87,6 @@ void writeLine() {
     timeline = String(millis() - current) + ",";
     current = millis();
         
-    readings = readings + String(floatToString(altimeter.getPressure())) + ",";
-    
-    timeline = timeline + String(millis() - current) + ",";
-    current = millis();   
-
     readings = readings + String(floatToString(altimeter.getAltitude())) + ",";
 
     timeline = timeline + String(millis() - current) + ",";
@@ -96,6 +97,71 @@ void writeLine() {
     timeline = timeline + String(millis() - current) + ",";
     current = millis();   
 
+    readings = readings + String(analogRead(x)) + ",";
+
+    timeline = timeline + String(millis() - current) + ",";
+    current = millis();   
+
+    readings = readings + String(analogRead(y)) + ",";
+
+    timeline = timeline + String(millis() - current) + ",";
+    current = millis();   
+    
+    readings = readings + String(analogRead(z)) + ",";
+
+    timeline = timeline + String(millis() - current) + ",";
+    current = millis();   
+
+    File file = SD.open(fileCharArray, FILE_WRITE);
+    file.println(readings);
+    file.close();
+    
+    timeline = timeline + String(millis() - current);
+    current = millis();
+    Serial.println(timeline);
+}
+
+void writeLineNewLibrary() {
+    long current = millis();
+    String timeline = "";
+    String readings;  
+    
+    while(!altimeter.isAltitudeReady()) {
+      delay(10);
+    }
+
+    timeline = String(millis() - current) + ",";
+    current = millis();
+
+    float altitude = altimeter.readAltitude(); 
+    // get sensor going on the next reading while we
+    // run the rest of the functions
+    altimeter.startReadingAltitude();
+
+    timeline = timeline + String(millis() - current) + ",";
+    current = millis();
+  
+    DateTime now = RTC.now();
+    readings = String(now.hour()) + ':' +
+        String(now.minute()) + ':' +
+        String(now.second()) + ","; 
+
+    timeline = timeline + String(millis() - current) + ",";
+    current = millis();
+            
+    timeline = timeline + String(millis() - current) + ",";
+    current = millis();   
+
+    readings = readings + String(floatToString(altitude)) + ",";
+
+    timeline = timeline + String(millis() - current) + ",";
+    current = millis();   
+
+    readings = readings + String(floatToString(altimeter.getTemperature())) + ",";
+
+    timeline = timeline + String(millis() - current) + ",";
+    current = millis();   
+    
     readings = readings + String(analogRead(x)) + ",";
 
     timeline = timeline + String(millis() - current) + ",";
