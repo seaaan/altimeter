@@ -31,7 +31,7 @@
  #include <Wire.h>
 #endif
 
-#include "sensor_lib.h"
+#include "altitudesensor.h"
 
 /**************************************************************************/
 /*!
@@ -54,11 +54,7 @@ boolean Adafruit_MPL3115A2::begin() {
     return false;
   }
 
-  write8(MPL3115A2_CTRL_REG1,
-	 MPL3115A2_CTRL_REG1_SBYB |
-	 MPL3115A2_CTRL_REG1_OS128 |
-	 MPL3115A2_CTRL_REG1_ALT);
-  write8(MPL3115A2_PT_DATA_CFG, 
+  write8(MPL3115A2_PT_DATA_CFG,
 	 MPL3115A2_PT_DATA_CFG_TDEFE |
 	 MPL3115A2_PT_DATA_CFG_PDEFE |
 	 MPL3115A2_PT_DATA_CFG_DREM);
@@ -101,10 +97,11 @@ float Adafruit_MPL3115A2::getPressure() {
 }
 
 void Adafruit_MPL3115A2::startReadingAltitude() {
-  int32_t alt;
-
+  // setting OST bit with SBYB turned off enters 
+  // one-shot mode, where immediate reading is done
+  // and then OST bit is cleared
   write8(MPL3115A2_CTRL_REG1, 
-	 MPL3115A2_CTRL_REG1_SBYB |
+	 MPL3115A2_CTRL_REG1_OST |
 	 MPL3115A2_CTRL_REG1_OS128 |
 	 MPL3115A2_CTRL_REG1_ALT);
 }
@@ -172,9 +169,6 @@ float Adafruit_MPL3115A2::getTemperature() {
   temp /= 16.0;
   return temp;
 }
-
-
-
 
 /*********************************************************************/
 

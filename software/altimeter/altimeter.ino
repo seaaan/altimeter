@@ -81,15 +81,15 @@ void loop() {
 }
 
 void writeLine() {
-  while(!altimeter.isAltitudeReady()) {
-    delay(50);
-  }
+    while(!altimeter.isAltitudeReady()) {
+      delay(50);
+    }
+    
+    float altitude = altimeter.readAltitude();
   
-  float altitude = altimeter.readAltitude();
-
-  // get sensor going on the next reading while we
-  // run the rest of the functions
-  altimeter.startReadingAltitude();
+    // get sensor going on the next reading while we
+    // run the rest of the functions
+    altimeter.startReadingAltitude();
   
     DateTime now = RTC.now();
     String readings = String(now.hour()) + ':' +
