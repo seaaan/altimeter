@@ -69,59 +69,11 @@ void createFile() {
 
 void loop() {
   long start = millis();
-  writeLineNewLibrary();
-  //writeLine();
+  writeLine();
   Serial.println(millis() - start);
 }
 
 void writeLine() {
-    long current = millis();
-    String timeline = "";
-    String readings;  
-    
-    DateTime now = RTC.now();
-    readings = String(now.hour()) + ':' +
-        String(now.minute()) + ':' +
-        String(now.second()) + ","; 
-    
-    timeline = String(millis() - current) + ",";
-    current = millis();
-        
-    readings = readings + String(floatToString(altimeter.getAltitude())) + ",";
-
-    timeline = timeline + String(millis() - current) + ",";
-    current = millis();   
-
-    readings = readings + String(floatToString(altimeter.getTemperature())) + ",";
-
-    timeline = timeline + String(millis() - current) + ",";
-    current = millis();   
-
-    readings = readings + String(analogRead(x)) + ",";
-
-    timeline = timeline + String(millis() - current) + ",";
-    current = millis();   
-
-    readings = readings + String(analogRead(y)) + ",";
-
-    timeline = timeline + String(millis() - current) + ",";
-    current = millis();   
-    
-    readings = readings + String(analogRead(z)) + ",";
-
-    timeline = timeline + String(millis() - current) + ",";
-    current = millis();   
-
-    File file = SD.open(fileCharArray, FILE_WRITE);
-    file.println(readings);
-    file.close();
-    
-    timeline = timeline + String(millis() - current);
-    current = millis();
-    Serial.println(timeline);
-}
-
-void writeLineNewLibrary() {
     long current = millis();
     String timeline = "";
     String readings;  
