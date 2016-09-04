@@ -19,6 +19,9 @@ extern "C"{
 Adafruit_MPL3115A2 altimeter = Adafruit_MPL3115A2();
 RTC_DS1307 RTC;
 
+String TO_WRITE = "";
+int cyclesSinceSave = 0;
+
 const int chipSelect = 10;
 const int z = A0;
 const int y = A1;
@@ -101,9 +104,25 @@ void writeLine() {
         String(analogRead(y)) + "," +
         String(analogRead(z));
 
-    File file = SD.open(fileCharArray, FILE_WRITE);
-    file.println(readings);
-    file.close();
+    saveToFile(readings);
+}
+
+void saveToFile(String readings) {
+    const int CYCLES_BETWEEN_SAVES = 10;
+    
+    TO_WRITE += readings;
+    
+    if (cyclesSinceSave < CYCLES_BETWEEN_SAVES) {
+      cyclesSinceSave++;
+      TO_WRITE += "\n";
+    } else {
+      cyclesSinceSave = 0; 
+    
+      File file = SD.open(fileCharArray, FILE_WRITE);
+      file.println(TO_WRITE);
+      file.close();
+      TO_WRITE = "";
+    }
 }
 
 String floatToString(float x) {
